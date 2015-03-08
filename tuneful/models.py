@@ -5,7 +5,7 @@ from sqlalchemy import Column, Integer, String, Sequence, ForeignKey
 from sqlalchemy.orm import relationship
 
 from tuneful import app
-from database import Base, engine
+from database import Base, engine, session
 
 
 class Song(Base):
@@ -15,7 +15,7 @@ class Song(Base):
 	song_file = Column(Integer, ForeignKey("files.id"), nullable=False)
 
 	def as_dictionary(self):
-		song_file_info = session.query(File).filter(File.id==self.song_file)
+		song_file_info = session.query(File).filter(File.id==self.song_file).first()
 		song = {
 					"id": self.id,
 					"file": {
