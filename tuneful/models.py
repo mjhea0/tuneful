@@ -12,13 +12,15 @@ class Song(Base):
 	__tablename__= "songs"
 
 	id = Column(Integer, primary_key=True)
-	song_file = Column(Integer, ForeignKey("files.id"))
+	song_file = Column(Integer, ForeignKey("files.id"), nullable=False)
 
 	def as_dictionary(self):
+		song_file_info = session.query(File).filter(File.id==self.song_file)
 		song = {
 					"id": self.id,
 					"file": {
-						#access dict from File object
+						"id": song_file_info.id,
+						"name": song_file_info.file_name
 					}
 		}
 		return song

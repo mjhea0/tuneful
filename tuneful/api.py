@@ -15,8 +15,8 @@ from utils import upload_path
 # JSON Schema describing the structure of a song
 song_schema = {
 	"properties": {
-		"id": {"type": "integer"},
-		"song_file": {"type": "string"}
+		"file": {"type": "string"},
+		"id": {"type": "integer"}
 	},
 	"required": ["id", "song_file"]
 }
