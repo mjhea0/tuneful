@@ -36,7 +36,7 @@ class TestAPI(unittest.TestCase):
         # Delete test upload folder
         shutil.rmtree(upload_path())
 
-    def ttest_get_empty_songs(self):
+    def test_get_empty_songs(self):
         """ Getting songs from an empty database """
         response = self.client.get("/api/songs",
             headers=[("Accept", "application/json")])
@@ -47,7 +47,7 @@ class TestAPI(unittest.TestCase):
         data = json.loads(response.data)
         self.assertEqual(data, [])
 
-    def ttest_get_songs(self):
+    def test_get_songs(self):
         """ Getting songs from a populated database """
         songA = models.Song(id=1, song_file="dance")
         songB = models.Song(id=2, song_file="country")
@@ -72,7 +72,7 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(songB["id"], 2)
         self.assertEqual(songB["song_file"], "country")
 
-    def ttest_post_song(self):
+    def test_post_song(self):
         """ Posting a new song """
         song_payload = {
                         "id": 5,

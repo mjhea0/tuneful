@@ -15,12 +15,12 @@ class Song(Base):
 	song_file = Column(Integer, ForeignKey("files.id"), nullable=False)
 
 	def as_dictionary(self):
-		song_file_info = session.query(File).filter(File.id==self.song_file).first()
+		song_file_info = session.query(File).filter(id==self.song_file).first()
 		song = {
 					"id": self.id,
 					"file": {
 						"id": song_file_info.id,
-						"name": song_file_info.file_name
+						"name": song_file_info.filename
 					}
 		}
 		return song
@@ -29,7 +29,7 @@ class File(Base):
 	__tablename__ = "files"
 
 	id = Column(Integer, primary_key=True)
-	file_name = Column(String(128))
+	filename = Column(String(1024))
 	song = relationship("Song", backref="song", uselist=False)
 
 	def as_dictionary(self):

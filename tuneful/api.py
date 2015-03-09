@@ -15,10 +15,10 @@ from utils import upload_path
 # JSON Schema describing the structure of a song
 song_schema = {
 	"properties": {
-		"file": {"type": "string"},
+		"file": {"type": "integer"},
 		"id": {"type": "integer"}
 	},
-	"required": ["id", "song_file"]
+	"required": ["id", "file"]
 }
 
 @app.route("/api/songs", methods=["GET"])
