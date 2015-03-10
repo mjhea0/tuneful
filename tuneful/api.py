@@ -13,13 +13,11 @@ from utils import upload_path
 
 
 # JSON Schema describing the structure of a song
-song_schema = {
-	"properties": {
-		"file": {"type": "integer"},
-		"id": {"type": "integer"}
-	},
-	"required": ["id", "file"]
-}
+#song_schema = {
+#	"properties": {
+#	},
+#	"required": ["id"]
+#}
 
 @app.route("/api/songs", methods=["GET"])
 @decorators.accept("application/json")
@@ -40,14 +38,15 @@ def get_songs():
 def post_song():
 	""" Add a new song """
 	data = request.json
+	print data 
 
 	# check that the JSON supplied is valid
 	# if not return a 422 Unprocessable Entity
-	try:
-		validate(data, song_schema)
-	except ValidationError as error:
-		data = {"message": error.message}
-		return Response(json.dumps(data), 422, mimetype="application/json")
+	#try:
+	#	validate(data, song_schema)
+	#except ValidationError as error:
+	#	data = {"message": error.message}
+	#	return Response(json.dumps(data), 422, mimetype="application/json")
 
 	# add the song to the database
 	song = models.Song(id=data["id"], song_file=data["song_file"])
@@ -76,11 +75,11 @@ def update_song(id):
 
 	# check that the JSON supplied is valid
 	# if not, return a 422 Unprocessable Entity
-	try:
-		validate(data, song_schema)
-	except ValidationError as error:
-		data = {"message": error.message}
-		return Response(json.dumps(data), 422, mimetype="application/json")
+	#try:
+	#	validate(data, song_schema)
+	#except ValidationError as error:
+	#	data = {"message": error.message}
+	#	return Response(json.dumps(data), 422, mimetype="application/json")
 
 	song.song_file = data["song_file"]
 	session.commit()

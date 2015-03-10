@@ -49,8 +49,14 @@ class TestAPI(unittest.TestCase):
 
     def test_get_songs(self):
         """ Getting songs from a populated database """
-        songA = models.Song(id=1, song_file="dance")
-        songB = models.Song(id=2, song_file="country")
+        fileA = models.File(filename='FileA')
+        fileB = models.File(filename='FileB')
+
+        session.add_all([fileA, fileB])
+        session.commit()
+
+        songA = models.Song(song_file_id=fileA.id)
+        songB = models.Song(song_file_id=fileB.id)
 
         session.add_all([songA, songB])
         session.commit()
@@ -64,20 +70,28 @@ class TestAPI(unittest.TestCase):
         data = json.loads(response.data)
         self.assertEqual(len(data), 2)
 
-        songA = data[0]
+        songA = data[0] 
         self.assertEqual(songA["id"], 1)
-        self.assertEqual(songA["song_file"], "dance")
+        self.assertEqual(songA["file"]["id"], 1)
+        self.assertEqual(songA["file"]["name"], "FileA")
 
         songB = data[1]
         self.assertEqual(songB["id"], 2)
-        self.assertEqual(songB["song_file"], "country")
+        self.assertEqual(songB["file"]["id"], 2)
+        self.assertEqual(songB["file"]["name"], "FileB")
 
     def test_post_song(self):
         """ Posting a new song """
+        fileA = models.File(filename='FileA')
+
+        session.add(fileA)
+        session.commit()
+
         song_payload = {
-                        "id": 5,
-                        "song_file": "techno"
+                        "file": {
+                            "id": fileA.id
                             }
+                        }
 
         response = self.client.post("/api/songs",
                                     data=json.dumps(song_payload),
