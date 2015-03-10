@@ -97,22 +97,22 @@ class TestAPI(unittest.TestCase):
                                     data=json.dumps(song_payload),
                                     content_type="application/json",
                                     headers=[("Accept", "application/json")])
-
+        print response.data
+        print fileA.id
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.mimetype, "application/json")
-        self.assertEqual(urlparse(response.headers.get("Location")).path,
-                        "/api/songs/5")
+        self.assertEqual(urlparse(response.headers.get("Location")).path, "/api/songs")
 
         data = json.loads(response.data)
-        self.assertEqual(data["id"], 5)
-        self.assertEqual(data["song_file"], "techno")
+        self.assertEqual(data["id"], fileA.id)
+        #self.assertEqual(data["song_file"], "techno")
 
         songs = session.query(models.Song).all()
         self.assertEqual(len(songs), 1)
 
         song = songs[0]
-        self.assertEqual(song.id, 1)
-        self.assertEqual(song.song_file, "techno")
+        self.assertEqual(song.id, fileA.id)
+        #self.assertEqual(song.song_file, "techno")
 
 
     def test_get_uploaded_file(self):
