@@ -138,6 +138,19 @@ def get_single_song(id):
 def uploaded_file(filename):
 	return send_from_directory(upload_path(), filename)
 
+@app.route("/api/files", methods=["GET"])
+@decorators.accept("application/json")
+def get_files():
+	""" Return a list of all the files as JSON """
+	# should we use query string arguments?
+
+	#get the files from the database
+	files = session.query(models.File).all()
+
+	#convert the songs to JSON and return a Response
+	data = json.dumps([file.as_dictionary() for file in files])
+	return Response(data, 200, mimetype="application/json")
+
 @app.route("/api/files", methods=["POST"])
 @decorators.require("multipart/form-data")
 @decorators.accept("application/json")
