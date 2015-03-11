@@ -114,6 +114,27 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(song.id, fileA.id)
         #self.assertEqual(song.song_file, "techno")
 
+    def test_delete_song(self):
+        """ Deleting a song from the app """
+        new_file = models.File(filename='New_File')
+        session.add(new_file)
+        session.commit()
+        new_song = models.Song(song_file_id=new_file.id)
+        session.add(new_song)
+        session.commit()
+
+
+        response = self.client.delete("/api/songs/{}".format(new_song.id),
+                                    headers=[("Accept", "application/json")])
+
+        session.delete(new_file)
+        session.commit()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.mimetype, "application/json")
+
+        songs = session.query(models.Song).all()
+        self.assertEqual(len(songs), 0)
 
     def test_get_uploaded_file(self):
         path = upload_path("test.txt")
