@@ -5,27 +5,30 @@ import json
 from urlparse import urlparse
 from StringIO import StringIO
 
-import sys; print sys.modules.keys()
-# Configure our app to use the testing databse
-os.environ["CONFIG_PATH"] = "tuneful.config.TestingConfig"
-
 from tuneful import app
 from tuneful import models
 from tuneful.utils import upload_path
 from tuneful.database import Base, engine, session
 
+
 class TestAPI(unittest.TestCase):
     """ Tests for the tuneful API """
 
     def setUp(self):
+
         """ Test setup """
+        # Configure our app to use the testing database
+        app.config.from_object('tuneful.config.TestingConfig')
         self.client = app.test_client()
 
         # Set up the tables in the database
         Base.metadata.create_all(engine)
 
         # Create folder for test uploads
-        os.mkdir(upload_path())
+        try:
+            os.mkdir(upload_path())
+        except OSError:
+            print "Folder already created!"
 
     def tearDown(self):
         """ Test teardown """
@@ -35,6 +38,14 @@ class TestAPI(unittest.TestCase):
 
         # Delete test upload folder
         shutil.rmtree(upload_path())
+    
+    def test_app_is_testing(self):
+        self.assertTrue(app.config['TESTING'])
+        self.assertEqual(app.config['UPLOAD_FOLDER'], 'test-uploads')
+        self.assertEqual(
+            app.config['DATABASE_URI'],
+            'postgresql://localhost:5432/tuneful-test'
+        )
 
     def test_get_empty_songs(self):
         """ Getting songs from an empty database """
